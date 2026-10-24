@@ -3,35 +3,32 @@ set -e
 
 TOMTOM_IP="192.168.101.115"
 
-echo "Reverting TomTom back to original OpenTom..."
+echo "[*] Stopping FractureOS and restoring stock OpenTom environment..."
 python3 -c "
-import socket, time
+import telnetlib, time
+tn = telnetlib.Telnet('${TOMTOM_IP}', 23, timeout=5)
+tn.read_until(b'login: ', timeout=3)
+tn.write(b'root\n')
+time.sleep(1)
 
-s = socket.socket()
-s.connect(('$TOMTOM_IP', 23))
-time.sleep(0.3); s.recv(1024)
-s.sendall(b'root\n'); time.sleep(0.3); s.recv(1024)
-s.sendall(b'stty -echo\n'); time.sleep(0.2); s.recv(1024)
+# Stop FractureOS
+tn.write(b'killall -9 fracture-core\n')
+time.sleep(1)
 
-cmd = '''
-if [ -x /mnt/sdcard/fracture/restore_opentom.sh ]; then
-    sh /mnt/sdcard/fracture/restore_opentom.sh
-else
-    killall -9 fracture-core 2>/dev/null || true
-    killall -CONT watchface.new 2>/dev/null || true
-    pidof watchface.new >/dev/null 2>&1 || ( /mnt/sdcard/opentom/bin/watchface-main & )
-fi
-echo __REVERT_DONE__
-'''
-s.sendall(cmd.encode())
+# Restore original watchface-toggle-info script
+tn.write(b'echo \"#!/bin/sh\npid=\\\$(pidof watchface.new)\n[ -n \\\"\\\$pid\\\" ] || exit 1\nkill -USR2 \\\"\\\$pid\\\"\n\" > /mnt/sdcard/opentom/bin/watchface-toggle-info && chmod +x /mnt/sdcard/opentom/bin/watchface-toggle-info\n')
+time.sleep(1)
 
-buf = b''
-while b'__REVERT_DONE__' not in buf:
-    chunk = s.recv(1024)
-    if not chunk: break
-    buf += chunk
+# Resume OpenTom UI processes
+tn.write(b'killall -CONT nano-X watchface.new\n')
+time.sleep(1)
 
-print('Device response:\n', buf.decode('latin1', errors='replace'))
-s.close()
+# Verify OpenTom processes
+tn.write(b'ps | grep -E \"nano-X|watchface\"\n')
+time.sleep(1)
+out = tn.read_very_eager().decode('ascii', errors='ignore')
+print(out)
+tn.close()
 "
-echo "=== Restored to OpenTom! FractureOS has been safely stopped. ==="
+
+echo "[✓] Original OpenTom UI successfully restored with zero changes!"

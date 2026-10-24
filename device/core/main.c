@@ -16,7 +16,10 @@
 static volatile int running = 1;
 
 static void handle_signal(int sig) {
-    (void)sig;
+    if (sig == SIGUSR1) {
+        input_trigger_quick_button();
+        return;
+    }
     running = 0;
 }
 
@@ -26,6 +29,7 @@ int main(int argc, char **argv) {
 
     signal(SIGINT, handle_signal);
     signal(SIGTERM, handle_signal);
+    signal(SIGUSR1, handle_signal);
 
     printf("Starting FractureOS Core Daemon...\n");
 

@@ -16,5 +16,7 @@ typedef enum {
 int  input_init(void);
 void input_close(void);
 InputEventType input_poll(void);
+void input_trigger_quick_button(void);
 
 #endif /* FRACTURE_INPUT_H */
+
