@@ -21,14 +21,7 @@ void chrome_render_header(const char *view_title, uint16_t accent_color) {
         fb_draw_text_small((SCREEN_W - tw) / 2, 6, view_title, accent_color);
     }
 
-    /* Right side: PC connection badge, battery, clock */
-    int conn = network_is_companion_connected();
-    fb_draw_circle_fill(SCREEN_W - 68, 11, 3, conn ? COLOR_EMERALD : COLOR_TEXT_DARK);
-
-    /* Battery icon */
-    fb_draw_icon(ICON_BATTERY, SCREEN_W - 52, 11, COLOR_TEXT_MUTED);
-
-    /* Clock */
+    /* Clock (right-aligned at x = SCREEN_W - 10) */
     time_t now = time(NULL);
     struct tm *tm = localtime(&now);
     char time_buf[16];
@@ -38,7 +31,18 @@ void chrome_render_header(const char *view_title, uint16_t accent_color) {
         strcpy(time_buf, "21:00");
     }
     int time_w = fb_text_width_small(time_buf);
-    fb_draw_text_small(SCREEN_W - time_w - 8, 6, time_buf, COLOR_TEXT_WHITE);
+    int time_x = SCREEN_W - time_w - 10;
+    fb_draw_text_small(time_x, 7, time_buf, COLOR_TEXT_WHITE);
+
+    /* Battery icon (placed 22px to the left of the clock) */
+    int batt_cx = time_x - 16;
+    fb_draw_icon(ICON_BATTERY, batt_cx, 11, COLOR_TEXT_MUTED);
+
+    /* PC connection status dot (placed 18px to the left of the battery) */
+    int conn = network_is_companion_connected();
+    int conn_cx = batt_cx - 18;
+    fb_draw_circle_fill(conn_cx, 11, 3, conn ? COLOR_EMERALD : COLOR_TEXT_DARK);
+
 
 
 }
