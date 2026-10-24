@@ -5,7 +5,7 @@
 
 #define FRACTURE_MAGIC        0x43415246 /* 'FRAC' in little-endian */
 #define FRACTURE_VERSION      2
-#define FRACTURE_DEFAULT_PORT 45872
+#define FRACTURE_DEFAULT_PORT 45876
 
 /* Protocol Flags */
 #define FRACTURE_FLAG_PC_ACTIVE     (1 << 0) /* User active on PC (not idle) */

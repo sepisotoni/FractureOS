@@ -9,7 +9,7 @@ import (
 const (
 	Magic       uint32 = 0x43415246 // 'FRAC' in little-endian
 	Version     uint16 = 2
-	DefaultPort int    = 45872
+	DefaultPort int    = 45876
 
 	FlagPCActive     uint16 = 1 << 0
 	FlagMediaPlaying uint16 = 1 << 1
