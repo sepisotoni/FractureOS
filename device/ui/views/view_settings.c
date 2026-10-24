@@ -66,7 +66,7 @@ void view_settings_render(const FractureTelemetryPacket *packet) {
     fb_draw_text_small(24, c4_y + 6, "Device: TomTom ONE v6 (S3C24xx ARM9 @ 264MHz)", COLOR_TEXT_MUTED);
     fb_draw_text_small(24, c4_y + 20, "RAM: 30MB Total  |  FractureOS Native C v2.0", COLOR_CYAN);
 
-    chrome_render_footer("TAP: Bright", "2x: Night", "PWR: Menu");
+    chrome_render_footer("TAP: Bright", "2x: Night", "PWR: Next");
 }
 
 void view_settings_handle_input(InputEventType event) {
@@ -83,7 +83,13 @@ void view_settings_handle_input(InputEventType event) {
         audio_set_muted(!audio_is_muted());
         audio_play(SOUND_CHIME);
     } else if (event == INPUT_BTN_QUICK) {
+        /* Quick power button cycles to next view or back to launcher */
         audio_play(SOUND_SWOOSH);
         view_manager_switch(VIEW_LAUNCHER);
+    } else if (event == INPUT_BTN_MEDIUM) {
+        /* Hold button toggles night mode directly on settings page */
+        night_mode = !night_mode;
+        audio_play(SOUND_CHIME);
     }
 }
+

@@ -27,13 +27,14 @@ time.sleep(1)
 tn.write(b'mkdir -p /mnt/sdcard/fracture/bin /mnt/sdcard/fracture/config /mnt/sdcard/fracture/logs\n')
 time.sleep(1)
 
-# Pause OpenTom UI to release framebuffer and avoid CPU usage
-tn.write(b'killall -STOP nano-X watchface.new\n')
+# Pause OpenTom UI and power_button daemon so it cannot trigger /bin/suspend
+tn.write(b'killall -STOP nano-X watchface.new power_button\n')
 time.sleep(1)
 
 # Stop any previous fracture instance
 tn.write(b'killall -9 fracture-core\n')
 time.sleep(1)
+
 
 # Fetch latest binary
 tn.write(b'wget http://${HOST_IP}:${PORT}/fracture-core -O /mnt/sdcard/fracture/bin/fracture-core\n')

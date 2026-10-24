@@ -136,10 +136,16 @@ void view_clock_handle_input(InputEventType event) {
         force_zen_face = !force_zen_face;
         audio_play(SOUND_CHIME);
     } else if (event == INPUT_BTN_QUICK) {
+        /* In Clock: Quick power button opens Launcher */
         audio_play(SOUND_SWOOSH);
         view_manager_switch(VIEW_LAUNCHER);
+    } else if (event == INPUT_BTN_MEDIUM) {
+        /* Hold power button toggles zen vs complications directly */
+        force_zen_face = !force_zen_face;
+        audio_play(SOUND_CHIME);
     } else if (event == INPUT_LONG_TAP) {
         audio_play(SOUND_SWOOSH);
         view_manager_switch(VIEW_TELEMETRY);
     }
 }
+

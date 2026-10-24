@@ -23,10 +23,10 @@ void chrome_render_header(const char *view_title, uint16_t accent_color) {
 
     /* Right side: PC connection badge, battery, clock */
     int conn = network_is_companion_connected();
-    fb_draw_circle_fill(238, 11, 3, conn ? COLOR_EMERALD : COLOR_TEXT_DARK);
+    fb_draw_circle_fill(SCREEN_W - 68, 11, 3, conn ? COLOR_EMERALD : COLOR_TEXT_DARK);
 
     /* Battery icon */
-    fb_draw_icon(ICON_BATTERY, 256, 11, COLOR_TEXT_MUTED);
+    fb_draw_icon(ICON_BATTERY, SCREEN_W - 52, 11, COLOR_TEXT_MUTED);
 
     /* Clock */
     time_t now = time(NULL);
@@ -37,7 +37,10 @@ void chrome_render_header(const char *view_title, uint16_t accent_color) {
     } else {
         strcpy(time_buf, "21:00");
     }
-    fb_draw_text_normal(275, 4, time_buf, COLOR_TEXT_WHITE);
+    int time_w = fb_text_width_small(time_buf);
+    fb_draw_text_small(SCREEN_W - time_w - 8, 6, time_buf, COLOR_TEXT_WHITE);
+
+
 }
 
 void chrome_render_footer(const char *left_hint, const char *center_hint, const char *right_hint) {

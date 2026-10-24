@@ -19,9 +19,10 @@ time.sleep(1)
 tn.write(b'echo \"#!/bin/sh\npid=\\\$(pidof watchface.new)\n[ -n \\\"\\\$pid\\\" ] || exit 1\nkill -USR2 \\\"\\\$pid\\\"\n\" > /mnt/sdcard/opentom/bin/watchface-toggle-info && chmod +x /mnt/sdcard/opentom/bin/watchface-toggle-info\n')
 time.sleep(1)
 
-# Resume OpenTom UI processes
-tn.write(b'killall -CONT nano-X watchface.new\n')
+# Resume OpenTom UI processes and power_button daemon
+tn.write(b'killall -CONT nano-X watchface.new power_button\n')
 time.sleep(1)
+
 
 # Verify OpenTom processes
 tn.write(b'ps | grep -E \"nano-X|watchface\"\n')
