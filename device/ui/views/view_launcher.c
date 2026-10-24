@@ -83,25 +83,21 @@ void view_launcher_render(const FractureTelemetryPacket *packet) {
         snprintf(toast, sizeof(toast), "Opening %s...", TILES[selected_index].title);
         chrome_render_toast(toast, TILES[selected_index].color);
     } else {
-        chrome_render_footer("TAP/PWR: Next", "2x: Launch", "HOLD: Open");
+        chrome_render_footer("TAP: Next", "2x: Prev", "PWR: Open");
     }
-
 }
 
 void view_launcher_handle_input(InputEventType event) {
     if (event == INPUT_SINGLE_TAP) {
+        /* TAP on screen cycles to next tile */
         selected_index = (selected_index + 1) % 6;
         audio_play(SOUND_CLICK);
     } else if (event == INPUT_DOUBLE_TAP) {
-        audio_play(SOUND_CHIME);
-        toast_countdown = 8;
-        view_manager_switch(TILES[selected_index].target_view);
-    } else if (event == INPUT_BTN_QUICK) {
-        /* In launcher: Quick power button moves selection to next tile */
-        selected_index = (selected_index + 1) % 6;
+        /* Double tap goes back / previous tile */
+        selected_index = (selected_index + 5) % 6;
         audio_play(SOUND_CLICK);
-    } else if (event == INPUT_BTN_MEDIUM) {
-        /* Hold power button launches the highlighted tile */
+    } else if (event == INPUT_BTN_QUICK || event == INPUT_BTN_MEDIUM) {
+        /* Power button click OPENS the highlighted tile */
         audio_play(SOUND_CHIME);
         toast_countdown = 8;
         view_manager_switch(TILES[selected_index].target_view);
@@ -110,6 +106,7 @@ void view_launcher_handle_input(InputEventType event) {
         view_manager_switch(VIEW_CLOCK);
     }
 }
+
 
 
 int view_launcher_get_selected_app(void) {
