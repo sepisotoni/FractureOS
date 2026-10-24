@@ -1,0 +1,13 @@
+# Binaries
+bin/
+*.exe
+*.o
+*.raw
+*.log
+
+# Go dependencies
+vendor/
+
+# Temp
+/tmp/
+.DS_Store
